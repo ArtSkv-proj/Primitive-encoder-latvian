@@ -17,10 +17,10 @@ key = {
 "ķ":"e",
 "i":"ō",
 "ō":"i",
-"t":"§",
-"§":"t",
-"=":"¦",
-"¦":"=",
+"t":";",
+";":"t",
+"=":":",
+":":"=",
 " ":"#",
 "#":" ",
 "p":"r",
@@ -32,7 +32,9 @@ key = {
 "3":"-",
 "-":"3",
 ".":"4",
-"4":"."
+"4":".",
+"z":"§",
+"§":"z"
 
 }
 
@@ -41,6 +43,8 @@ dir_path = os.path.dirname(os.path.abspath(__file__))
 
 window = Tk()
 window.geometry("700x600")
+window.title("Šifrēšanas rīks")
+window.configure(bg="lightblue")
 
 
 
@@ -52,7 +56,8 @@ def create():
 
                               if file.endswith(inputv):
                                     file_path = os.path.join(root, file)
-                                    with open(file_path) as f:
+
+                                    with open(file_path, errors='ignore',encoding="utf-8") as f:
                                           cont = f.read()
                                           global FilePathMemo
                                           FilePathMemo = f
@@ -100,7 +105,8 @@ def labelcreate():
                         if file.endswith(inputv):
                               file_path = os.path.join(root, file)
                               root1, extension = os.path.splitext(file_path)
-                              with open(file_path) as f:
+
+                              with open(file_path, 'r', errors='ignore',encoding="utf-8") as f:
                                     global FileType
                                     FileType = extension
                                     cont = f.read()
@@ -153,7 +159,7 @@ def export():
                                           number = ""
                               
                   max_number = int(max_number) + 1
-                  f = open(name+f"({max_number})"+exten, "x")
+                  f = open(name+f"({max_number})"+exten, "x",encoding="utf-8")
 
                   for x in range(100):
                         if inputv[len(inputv)-1-x] == ".":
@@ -184,10 +190,10 @@ def export():
                   f.write(inputv)
                   '''
             else:
-                  f = open(name+exten,"x")
+                  f = open(name+exten,"x",encoding="utf-8")
                   f.write(inputv)
       else:
-            f = open(str(os.path.splitext(FilePathMemo.name)[0])+".lvc","x")
+            f = open(str(os.path.splitext(FilePathMemo.name)[0])+".lvc","x",encoding="utf-8")
             f.write(inputv)
 
 
@@ -195,17 +201,17 @@ def export():
 
 T = Text(window,height=5,width=10)
 
-F = Frame(window)
+The_frame = Frame(window)
 
-T2 = Text(F, wrap=NONE)
+T2 = Text(The_frame, wrap=NONE)
 
-S = Scrollbar(F,orient=VERTICAL, command=T2.yview)
-S2 = Scrollbar(F,orient=HORIZONTAL,command=T2.xview)
+S = Scrollbar(The_frame,orient=VERTICAL, command=T2.yview)
+S2 = Scrollbar(The_frame,orient=HORIZONTAL,command=T2.xview)
 
 S.pack(side=RIGHT, fill="y")
 S2.pack(side=BOTTOM, fill="x")
 
-F.pack(expand=True,fill=BOTH)
+The_frame.pack(expand=True,fill=BOTH)
 T2.pack(expand=True,side=LEFT,fill=BOTH)
 
 
@@ -220,7 +226,8 @@ T2.pack(fill = BOTH, expand=0)
 
 
 T.pack()
-Button(window, text="read", command=labelcreate).pack()
-Button(window, text="encode/decode", command=create).pack()
-Button(window, text="export", command=export).pack()
+Button(window, text="Lasīt", command=labelcreate).pack()
+Button(window, text="Šifrēt/Atšifrēt", command=create).pack()
+Button(window, text="Eksportēt", command=export).pack()
+
 window.mainloop()
