@@ -1,7 +1,9 @@
 from tkinter import *
 import os
-import sys
-import re
+
+# import re
+
+# Atslēga.
 
 key = {
 
@@ -34,10 +36,15 @@ key = {
 ".":"4",
 "4":".",
 "z":"§",
-"§":"z"
+"§":"z",
+"d":"ņ",
+"ņ":"d",
+"5":"n",
+"n":"5"
 
 }
 
+# Izveido galveno Interfeisa elementu
 
 dir_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -49,6 +56,8 @@ window.configure(bg="lightblue")
 
 
 def create():
+      # Atšifrē/Šifrē tekstu atkarībā no faila paplašinājuma.
+            # Atrod failu no ievadītā nosaukuma.
             inputv = T.get("1.0", END).strip()
             for root, dirs, files in os.walk(dir_path):
                   if root == dir_path:
@@ -57,10 +66,14 @@ def create():
                               if file.endswith(inputv):
                                     file_path = os.path.join(root, file)
 
+                                    # Ja tāds ir, nokopē tā tekstu.
+
                                     with open(file_path, errors='ignore',encoding="utf-8") as f:
                                           cont = f.read()
                                           global FilePathMemo
                                           FilePathMemo = f
+
+                                    # Ja pastāv paplašinājums .lvc, tekstu atšifrē.
 
                                     if file.endswith(".lvc"):
                                           transformed_text = ''
@@ -73,24 +86,37 @@ def create():
                                           global fulltextmemo 
                                           fulltextmemo = transformed_text
 
+                                          # Meklē faila iepriekšējo paplašinājumu.
+
                                           for x in range(100):
                                                 if transformed_text[len(transformed_text)-1-x] == ".":
                                                       transformed_text = transformed_text[:len(transformed_text)-1-x]
                                                       break
+
+                                          # Izvada pārveidoto tekstu
 
                                           T2.config(state=NORMAL)
                                           T2.delete("1.0", END)
                                           T2.insert(END,transformed_text)
                                           T2.config(state=DISABLED)
                                           print(transformed_text)
+                                    
+                                    # Ja nepastāv tad šifrē
+
                                     else:
-                                          cont += FileType
+
+                                          # Šifrē tekstu.
+
+                                          cont += FileType # Šifrētam tekstam klāt pieliek paplašinājumu, lai vēlak to var atgriezt tajā pašā formātā.
                                           transformed_text = ''
                                           for letter in cont:
                                                 if letter in key:
                                                       transformed_text += key[letter]
                                                 else:
                                                       transformed_text += letter
+
+                                          # Izvada pārveidoto tekstu.
+
                                           T2.config(state=NORMAL)
                                           T2.delete("1.0", END)
                                           T2.insert(END,transformed_text)
@@ -98,7 +124,9 @@ def create():
                                           print(transformed_text)
 
 def labelcreate():
-      # No multiple file support
+
+      # Printē izvēlētā faila tekstu iekš rāmja
+
            inputv = T.get("1.0", END).strip()
            for root, dirs, files in os.walk(dir_path):
                   for file in files: 
@@ -108,7 +136,7 @@ def labelcreate():
 
                               with open(file_path, 'r', errors='ignore',encoding="utf-8") as f:
                                     global FileType
-                                    FileType = extension
+                                    FileType = extension # Iegūst faila palašinājumu
                                     cont = f.read()
                                     T2.config(state=NORMAL)
                                     T2.delete("1.0", END)
@@ -116,9 +144,18 @@ def labelcreate():
                                     T2.config(state=DISABLED)
 
 def export():
+
+      # Tiek izveidots jauns fails ar tekstu, kas ir iekš galvenā teksta rāmja.
+
       inputv = T2.get("1.0", END).strip()
+
+      # Pārbauda vai ir iešifrēts.
+
       if FileType == ".lvc":
-            inputv = fulltextmemo
+            inputv = fulltextmemo # nolasa tekstu no atmiņas
+
+            # Sagatavo teksta paplašinājumu
+
             global exten
             exten = ""
             for x in range(100):
@@ -126,13 +163,17 @@ def export():
                         for y in range(x+1):
                               exten += inputv[len(inputv)-1-x+y]
                         break
-            name = str(os.path.splitext(FilePathMemo.name)[0])
+
+            name = str(os.path.splitext(FilePathMemo.name)[0])  # Sadala faila atrašanās vietas nosaukumu un izvēlas pēdējo vienību, kas ir faila nosaukums.
+            
+            # Pārbauda vai jau nav tāda faila, ja ir tad nosaukumā ievieto ciparu.
+
             if os.path.exists(name+exten):
                   max_number = "1"
                   number = ""
-                  # Vajadzētu pārtaisīt šo daļu
 
-                  # new
+                  # Jaunā versija.
+
                   split_name = name.split("\\")
                   for root, dirs, files in os.walk(dir_path):
                         if root == dir_path:
@@ -140,7 +181,6 @@ def export():
                                     file_name = file.split(".")
                                     file_name = file_name[0]
                                     if not file_name == "" and file_name.split("(")[0] == split_name[-1]:
-
                                           for x in range(1000):
                                                 if file_name[len(file_name)-1-x] == "(":
                                                       for y in range(x+1):
@@ -159,7 +199,9 @@ def export():
                                           number = ""
                               
                   max_number = int(max_number) + 1
-                  f = open(name+f"({max_number})"+exten, "x",encoding="utf-8")
+                  f = open(name+f"({max_number})"+exten, "x",encoding="utf-8") # Izveido failu ar attiecīgo, lielāko skaitli.
+
+                  # Izņem no teksta paplašinājumu.
 
                   for x in range(100):
                         if inputv[len(inputv)-1-x] == ".":
@@ -168,7 +210,8 @@ def export():
 
                   f.write(inputv)
 
-                  # old
+                  # Vecā versija, kura izmanto "re" moduli.
+
                   '''
                   pattern = re.compile(r"\(\d+\)$")
                   match = pattern.search(name+exten)
@@ -190,14 +233,21 @@ def export():
                   f.write(inputv)
                   '''
             else:
+            
+                  # Tāda faila, nav tāpēc netiek lietots cipars
+
                   f = open(name+exten,"x",encoding="utf-8")
                   f.write(inputv)
       else:
+
+            # Fails tika šifrēts un izveidots.
+
             f = open(str(os.path.splitext(FilePathMemo.name)[0])+".lvc","x",encoding="utf-8")
             f.write(inputv)
 
 
 
+# Sagatavo tkinter interfeisa elementus
 
 T = Text(window,height=5,width=10)
 
