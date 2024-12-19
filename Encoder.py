@@ -1,5 +1,6 @@
 from tkinter import *
 import os
+from threading import Timer
 
 # import re
 
@@ -49,22 +50,46 @@ key = {
 dir_path = os.path.dirname(os.path.abspath(__file__))
 
 window = Tk()
-window.geometry("700x600")
+window.geometry("800x700")
 window.title("Šifrēšanas rīks")
-window.configure(bg="lightblue")
+window.config(bg="gray14")
 
 
+#### Informācija lietotājam.
+
+memorisedinfo = "Ierakstiet faila beigu nosaukumu, piemēram, .txt vai pilno nosaukumu, kuru vēlaties nolasīt un uzsklikšķiniet uz pogas lasīt. Tālāk var atšifrēt tekstu, ja tam ir faila paplašinājums .lvc, vai šifrēt to. Visbeidzot jūs varat izveidot jaunu failu ar tekstu augšējā rāmī uzsklikšķinot uz pogas eksportēt. Visi procesi notiek rīka mapītē."
+
+####
+
+#### Lietotāja brīdināšana par programmas darbībām.
+
+def info2():
+      Button1_info.config(text=memorisedinfo)
+
+
+def info(errormessage):
+      Button1_info.config(text=errormessage)
+      t = Timer(2, info2)
+      t.start()
+
+####
+
+FileType = ""
 
 def create():
-      # Atšifrē/Šifrē tekstu atkarībā no faila paplašinājuma.
-            # Atrod failu no ievadītā nosaukuma.
-            inputv = T.get("1.0", END).strip()
+# Atšifrē/Šifrē tekstu atkarībā no faila paplašinājuma.
+      # Atrod failu no ievadītā nosaukuma.
+      inputv = T.get("1.0", END).strip()
+      success = False
+      if inputv != "":
             for root, dirs, files in os.walk(dir_path):
                   if root == dir_path:
                         for file in files: 
 
                               if file.endswith(inputv):
                                     file_path = os.path.join(root, file)
+
+                                    success = True
 
                                     # Ja tāds ir, nokopē tā tekstu.
 
@@ -122,12 +147,17 @@ def create():
                                           T2.insert(END,transformed_text)
                                           T2.config(state=DISABLED)
                                           print(transformed_text)
+      if not success:
+            info("Fails netika atrasts.") # Ja tāda faila nepastāv, to pasaka lietotājam
 
 def labelcreate():
 
       # Printē izvēlētā faila tekstu iekš rāmja
 
-           inputv = T.get("1.0", END).strip()
+      success = False
+
+      inputv = T.get("1.0", END).strip()
+      if inputv != "":
            for root, dirs, files in os.walk(dir_path):
                   for file in files: 
                         if file.endswith(inputv):
@@ -136,12 +166,17 @@ def labelcreate():
 
                               with open(file_path, 'r', errors='ignore',encoding="utf-8") as f:
                                     global FileType
-                                    FileType = extension # Iegūst faila palašinājumu
+                                    FileType = extension # Iegūst faila palašinājumu.
                                     cont = f.read()
                                     T2.config(state=NORMAL)
                                     T2.delete("1.0", END)
                                     T2.insert(END, cont)
                                     T2.config(state=DISABLED)
+                              success = True
+
+      if not success:
+            info("Fails netika atrasts.") # Ja nav atrasts, pasaka to lietotājam.
+
 
 def export():
 
@@ -151,7 +186,7 @@ def export():
 
       # Pārbauda vai ir iešifrēts.
 
-      if FileType == ".lvc":
+      if FileType and FileType == ".lvc":
             inputv = fulltextmemo # nolasa tekstu no atmiņas
 
             # Sagatavo teksta paplašinājumu
@@ -238,20 +273,31 @@ def export():
 
                   f = open(name+exten,"x",encoding="utf-8")
                   f.write(inputv)
-      else:
+      elif FileType:
 
             # Fails tika šifrēts un izveidots.
-
-            f = open(str(os.path.splitext(FilePathMemo.name)[0])+".lvc","x",encoding="utf-8")
-            f.write(inputv)
-
+            if os.path.exists(str(os.path.splitext(FilePathMemo.name)[0])+".lvc"):
+                  info("Fails .lvc ar šādu nosaukumu jau eksistē.")
+            else:
+                  f = open(str(os.path.splitext(FilePathMemo.name)[0])+".lvc","x",encoding="utf-8")
+                  f.write(inputv)
+      else:
+            info("Lūdzu ievadiet faila nosaukumu vispirms.")
 
 
 # Sagatavo tkinter interfeisa elementus
 
-T = Text(window,height=5,width=10)
 
-The_frame = Frame(window)
+
+The_frame = Frame(window,height=500,width=450)
+
+BottomFrame2 = Frame(window,height=200,width=350)
+BottomFrame2.pack(side=BOTTOM,pady=25)
+
+BottomFrame = Frame(window,height=200,width=400)
+BottomFrame.pack(side=BOTTOM)
+
+T = Text(BottomFrame,height=5,width=20)
 
 T2 = Text(The_frame, wrap=NONE)
 
@@ -261,23 +307,32 @@ S2 = Scrollbar(The_frame,orient=HORIZONTAL,command=T2.xview)
 S.pack(side=RIGHT, fill="y")
 S2.pack(side=BOTTOM, fill="x")
 
-The_frame.pack(expand=True,fill=BOTH)
+The_frame.pack(side=BOTTOM,pady=25)
+
+
 T2.pack(expand=True,side=LEFT,fill=BOTH)
-
-
-
-
-
-
 T2.config(yscrollcommand= S.set,xscrollcommand = S2.set, wrap= NONE)
 T2.config(state=DISABLED)
 
 T2.pack(fill = BOTH, expand=0)
 
 
-T.pack()
-Button(window, text="Lasīt", command=labelcreate).pack()
-Button(window, text="Šifrēt/Atšifrēt", command=create).pack()
-Button(window, text="Eksportēt", command=export).pack()
+T.pack(padx=10,side=LEFT)
+
+Button1_info = Label(BottomFrame,height=6,width=44,text=memorisedinfo,bg="gray14",fg="white")
+Button1_info.config(wraplength=300,justify=LEFT)
+Button1_info.pack(side=LEFT, padx=25,pady=25)
+
+
+
+Button1 = Button(BottomFrame2, text="Lasīt", command=labelcreate,bg="gray14",fg="white")
+Button2 = Button(BottomFrame2, text="Šifrēt/Atšifrēt", command=create,bg="gray14",fg="white")
+Button3 = Button(BottomFrame2, text="Eksportēt", command=export,bg="gray14",fg="white")
+
+Button1.pack(side=TOP,pady=10)
+Button2.pack(side=TOP,pady=5,padx=50)
+Button3.pack(side=TOP,pady=10)
+
+# Ieslēdz interfeisu.
 
 window.mainloop()
