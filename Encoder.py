@@ -163,10 +163,9 @@ def readfile():
                         if file.endswith(inputv):
                               file_path = os.path.join(root, file)
                               root1, extension = os.path.splitext(file_path)
-
+                              global FileType
+                              FileType = extension # Iegūst faila palašinājumu.
                               with open(file_path, 'r', errors='ignore',encoding="utf-8") as f:
-                                    global FileType
-                                    FileType = extension # Iegūst faila palašinājumu.
                                     cont = f.read()
                                     T2.config(state=NORMAL)
                                     T2.delete("1.0", END)
@@ -200,11 +199,10 @@ def export():
                         break
 
             name = str(os.path.splitext(FilePathMemo.name)[0])  # Sadala faila atrašanās vietas nosaukumu un izvēlas pēdējo vienību, kas ir faila nosaukums.
-            
             # Pārbauda vai jau nav tāda faila, ja ir tad nosaukumā ievieto ciparu.
 
             if os.path.exists(name+exten):
-                  max_number = "1"
+                  max_number = "0"
                   number = ""
 
                   # Jaunā versija.
