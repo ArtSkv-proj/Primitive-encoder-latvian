@@ -150,7 +150,7 @@ def create():
       if not success:
             info("Fails netika atrasts.") # Ja tāda faila nepastāv, to pasaka lietotājam
 
-def labelcreate():
+def readfile():
 
       # Printē izvēlētā faila tekstu iekš rāmja
 
@@ -325,7 +325,7 @@ Button1_info.pack(side=LEFT, padx=25,pady=25)
 
 
 
-Button1 = Button(BottomFrame2, text="Lasīt", command=labelcreate,bg="gray14",fg="white")
+Button1 = Button(BottomFrame2, text="Lasīt", command=readfile,bg="gray14",fg="white")
 Button2 = Button(BottomFrame2, text="Šifrēt/Atšifrēt", command=create,bg="gray14",fg="white")
 Button3 = Button(BottomFrame2, text="Eksportēt", command=export,bg="gray14",fg="white")
 
