@@ -189,9 +189,9 @@ def export():
       # Pārbauda vai ir iešifrēts.
 
       if FileType and FileType == ".lvc":
-            inputv = fulltextmemo # nolasa tekstu no atmiņas
+            inputv = fulltextmemo # nolasa tekstu no atmiņas.
 
-            # Sagatavo teksta paplašinājumu
+            # Sagatavo teksta paplašinājumu.
 
             global exten
             exten = ""
