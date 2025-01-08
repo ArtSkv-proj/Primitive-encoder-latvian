@@ -2,7 +2,7 @@ from tkinter import *
 import os
 from threading import Timer
 
-# import re
+# import re.
 
 # Atslēga.
 
@@ -45,7 +45,7 @@ key = {
 
 }
 
-# Izveido galveno Interfeisa elementu
+# Izveido galveno Interfeisa elementu.
 
 dir_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -118,15 +118,16 @@ def create():
                                                       transformed_text = transformed_text[:len(transformed_text)-1-x]
                                                       break
 
-                                          # Izvada pārveidoto tekstu
+                                          # Izvada pārveidoto tekstu.
 
                                           T2.config(state=NORMAL)
                                           T2.delete("1.0", END)
                                           T2.insert(END,transformed_text)
                                           T2.config(state=DISABLED)
                                           print(transformed_text)
+                                          info("Teksts tika veiksmīgi atšifrēts.")
                                     
-                                    # Ja nepastāv tad šifrē
+                                    # Ja nepastāv tad šifrē.
 
                                     else:
 
@@ -147,12 +148,13 @@ def create():
                                           T2.insert(END,transformed_text)
                                           T2.config(state=DISABLED)
                                           print(transformed_text)
+                                          info("Teksts tika veiksmīgi iešifrēts.")
       if not success:
-            info("Fails netika atrasts.") # Ja tāda faila nepastāv, to pasaka lietotājam
+            info("Fails netika atrasts.") # Ja tāda faila nepastāv, to pasaka lietotājam.
 
 def readfile():
 
-      # Printē izvēlētā faila tekstu iekš rāmja
+      # Printē izvēlētā faila tekstu iekš rāmja.
 
       success = False
 
@@ -171,6 +173,7 @@ def readfile():
                                     T2.delete("1.0", END)
                                     T2.insert(END, cont)
                                     T2.config(state=DISABLED)
+                                    info("Fails tika veiksmīgi atrasts un tā tekstu var apskatīt augšējā rāmī.")
                               success = True
 
       if not success:
@@ -265,12 +268,14 @@ def export():
 
                   f.write(inputv)
                   '''
+                  info(f"Šāds fails jau pastāv, tāpēc jaunajam failam tika piešķirts cipars. Atšifrētais teksts tika veiksmīgi eksportēts programmas mapītē. Pilnais ceļa nosaukums - {name+f"({max_number})"+exten}")
             else:
             
-                  # Tāda faila, nav tāpēc netiek lietots cipars
+                  # Tāda faila nav, tāpēc netiek lietots cipars.
 
                   f = open(name+exten,"x",encoding="utf-8")
                   f.write(inputv)
+                  info(f"Atšifrētais teksts tika veiksmīgi eksportēts programmas mapītē. Pilnais ceļa nosaukums - {name+exten}")
       elif FileType:
 
             # Fails tika šifrēts un izveidots.
@@ -279,11 +284,12 @@ def export():
             else:
                   f = open(str(os.path.splitext(FilePathMemo.name)[0])+".lvc","x",encoding="utf-8")
                   f.write(inputv)
+                  info(f"Iešifrētais teksts ar paplašinājumu {FileType} tika veiksmīgi eksportēts programmas mapītē. Pilnais ceļa nosaukums - {str(os.path.splitext(FilePathMemo.name)[0])+".lvc"}")
       else:
-            info("Lūdzu ievadiet faila nosaukumu vispirms.")
+            info("Lūgums vispirms ievadīt faila nosaukumu.")
 
 
-# Sagatavo tkinter interfeisa elementus
+# Sagatavo tkinter interfeisa elementus.
 
 
 
