@@ -69,7 +69,7 @@ def info2():
 
 def info(errormessage):
       Button1_info.config(text=errormessage)
-      t = Timer(2, info2)
+      t = Timer(3, info2)
       t.start()
 
 ####
